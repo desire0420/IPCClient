@@ -7,8 +7,13 @@ import android.os.Parcelable;
  * Created by lypeer on 2016/7/16.
  */
 public class Book implements Parcelable{
+    public String getName() {
+        return name;
+    }
 
-    private String name;
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public int getPrice() {
         return price;
@@ -18,13 +23,7 @@ public class Book implements Parcelable{
         this.price = price;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    private String name;
 
     private int price;
 
@@ -58,13 +57,19 @@ public class Book implements Parcelable{
         dest.writeInt(price);
     }
 
+    /**
+     * 参数是一个Parcel,用它来存储与传输数据
+     * @param dest
+     */
     public void readFromParcel(Parcel dest) {
-        setName(dest.readString());
-        setPrice(dest.readInt());
+        //注意，此处的读值顺序应当是和writeToParcel()方法中一致的
+        name = dest.readString();
+        price = dest.readInt();
     }
 
+    //方便打印数据
     @Override
     public String toString() {
-        return "name : " + getName() + " , price : " + getPrice();
+        return "name : " + name + " , price : " + price;
     }
 }
