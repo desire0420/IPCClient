@@ -1,5 +1,6 @@
 package com.lypeer.ipcclient;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.lypeer.ipcclient.Book;
@@ -19,10 +21,12 @@ import java.util.List;
 /**
  * 客户端的AIDLActivity.java
  * 由于测试机的无用debug信息太多，故log都是用的e
- *
+ * <p>
  * Created by lypeer on 2016/7/17.
  */
-public class AIDLActivity extends AppCompatActivity {
+public class AIDLActivity extends Activity {
+    private Button startmain;
+    private Button addBookIn, addBookOut, addBookInout;
 
     //由AIDL文件生成的Java类
     private BookManager mBookManager = null;
@@ -37,70 +41,43 @@ public class AIDLActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aidl);
-    }
+        startmain = (Button) findViewById(R.id.startmain);
+        addBookIn = (Button) findViewById(R.id.addBookIn);
+        startmain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AIDLActivity.this, MainActivity.class));
+            }
+        });
 
-    /**
-     * 按钮的点击事件，点击之后调用服务端的addBookIn方法
-     *
-     * @param view
-     */
-    public void addBookIn(View view) {
-        //如果与服务端的连接处于未连接状态，则尝试连接
-        if (!mBound) {
-            attemptToBindService();
-            Toast.makeText(this, "当前与服务端处于未连接状态，正在尝试重连，请稍后再试", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (mBookManager == null) return;
+        /**
+         * 按钮的点击事件，点击之后调用服务端的addBookIn方法
+         *
+         * @param view
+         */
+        addBookIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //如果与服务端的连接处于未连接状态，则尝试连接
+                if (!mBound) {
+                    attemptToBindService();
+                    Toast.makeText(AIDLActivity.this, "当前与服务端处于未连接状态，正在尝试重连，请稍后再试", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (mBookManager == null) return;
 
-        Book book = new Book();
-        book.setName("APP研发录In");
-        book.setPrice(30);
-        try {
-            //获得服务端执行方法的返回值，并打印输出
-            Book returnBook = mBookManager.addBookIn(book);
-            Log.e(getLocalClassName(), returnBook.toString());
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void addBookOut(View view) {
-        if (!mBound) {
-            attemptToBindService();
-            Toast.makeText(this, "当前与服务端处于未连接状态，正在尝试重连，请稍后再试", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (mBookManager == null) return;
-
-        Book book = new Book();
-        book.setName("APP研发录Out");
-        book.setPrice(30);
-        try {
-            Book returnBook = mBookManager.addBookOut(book);
-            Log.e(getLocalClassName(), returnBook.toString());
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void addBookInout(View view) {
-        if (!mBound) {
-            attemptToBindService();
-            Toast.makeText(this, "当前与服务端处于未连接状态，正在尝试重连，请稍后再试", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (mBookManager == null) return;
-
-        Book book = new Book();
-        book.setName("APP研发录Inout");
-        book.setPrice(30);
-        try {
-            Book returnBook = mBookManager.addBookInout(book);
-            Log.e(getLocalClassName(), returnBook.toString());
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+                Book book = new Book();
+                book.setName("APP研发录In");
+                book.setPrice(30);
+                try {
+                    //获得服务端执行方法的返回值，并打印输出
+                    Book returnBook = mBookManager.addBookIn(book);
+                    Log.e(getLocalClassName(), "-----" + returnBook.toString());
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
@@ -140,7 +117,7 @@ public class AIDLActivity extends AppCompatActivity {
             if (mBookManager != null) {
                 try {
                     mBooks = mBookManager.getBooks();
-                    Log.e(getLocalClassName(), mBooks.toString());
+                    Log.e(getLocalClassName(),"onServiceConnected--"+ mBooks.toString());
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }

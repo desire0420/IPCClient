@@ -12,18 +12,14 @@
     tools:context="com.lypeer.ipcclient.MainActivity">
 
     <Button
+        android:id="@+id/addBookIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="addBookIn"
-        android:text="addBookIn"/>
+        android:text="addBookIn" />
+
     <Button
+        android:id="@+id/startmain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="addBookOut"
-        android:text="addBookOut"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="addBookInout"
-        android:text="addBookInout"/>
+        android:text="startmain"/>
 </LinearLayout>
